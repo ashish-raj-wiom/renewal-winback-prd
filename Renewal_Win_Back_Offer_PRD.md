@@ -5,7 +5,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj | **Reviewer** — [Eng lead] ⚠️ *AI GENERATED — review* | **Status** — Draft | **Sign-off** — Pending |
-| **Version** — v0.2 · 14 Sep 2026 | **Consulted — Offer Engine** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Router Recovery / Ops** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Comms / Growth** — [name] ⚠️ *AI GENERATED — review* |
+| **Version** — v0.3 · 14 Sep 2026 | **Consulted — Offer Engine** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Router Recovery / Ops** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Comms / Growth** — [name] ⚠️ *AI GENERATED — review* |
 
 ---
 
@@ -37,6 +37,8 @@
 
 **Reading M1 honestly.** There is no holdout (Overrides), so the live number is compared against the 19.8% historical baseline. A general upswing in recharges would move it too. M1 is an adoption measure, not a proof of lift.
 
+**M1 depends on R2f.** The denominator is "who was in the set", and the set is rebuilt every C-03. Unless each day's membership is kept (R2f, MQ-7), that denominator is gone the moment the set is rebuilt and M1 cannot be computed for any past period — nor can any other measurement question be answered retrospectively.
+
 ---
 
 ## 2. User Stories & Rules
@@ -44,7 +46,7 @@
 | ID | Story | MUST | MUST NOT |
 |---|---|---|---|
 | R1 | As a member of the growth team, I run several win-back offers at once from the existing offer panel, so I can treat different groups differently without a new tool. | **(a)** Let the definer create more than one live win-back offer, each with its own window, reward map (R5) and cohort rule. **(b)** Reject a new offer whose cohort rule overlaps a live one (R2d). | Require a new admin surface; accept a reward expressed as a price (G1). |
-| R2 | As a member of the growth team, I target lapsed customers who still have our router, so I spend only where a win-back is possible. | **(a)** Build each offer's set once every C-03. **(b)** Include a customer whose latest plan expired between C-01 and C-02 days ago with no recharge since. **(c)** Exclude a customer whose router has been collected, unless C-07 says include. **(d)** Put a customer in **at most one** set — sets must not overlap. **(e)** Serve the offer only to customers in that set. | Show the offer to anyone outside the set (G2); place one customer in two sets. |
+| R2 | As a member of the growth team, I target lapsed customers who still have our router, so I spend only where a win-back is possible. | **(a)** Build each offer's set once every C-03. **(b)** Include a customer whose latest plan expired between C-01 and C-02 days ago with no recharge since. **(c)** Exclude a customer whose router has been collected, unless C-07 says include. **(d)** Put a customer in **at most one** set — sets must not overlap. **(e)** Serve the offer only to customers in that set. **(f)** Keep a dated record of every build's membership, so the exact set for any past day can be reconstructed per offer, for C-09. | Show the offer to anyone outside the set (G2); place one customer in two sets; discard a day's membership once the set is rebuilt. |
 | R3 | As a lapsed customer, I hear once that an offer is waiting, so I have a reason to open the app. | **(a)** Send one customer-chat message when the customer enters a set. **(b)** Send one WhatsApp message for the same entry. **(c)** Send both within C-08 of the set being built. **(d)** Send neither again while the customer stays in that set. | Send a second announcement for the same entry (G5); announce a customer who is not in a set. |
 | R4 | As a lapsed customer, I see the offer on the plans it applies to when I open the recharge screen, so I know what I get. | **(a)** Mark each plan the offer covers on the recharge list, showing the plan's own days struck through and the resulting total days. **(b)** Leave the plan's price unchanged. **(c)** Leave every plan the offer does not cover exactly as it is today. | Show the offer to anyone outside the set (G2); change any price (G1). |
 | R5 | As a lapsed customer, I get the bonus days on the plan I buy, so the offer is real. | **(a)** Add the bonus days set for that plan in the offer's reward map. Launch values: 2+2, 7+7, 14+14. **(b)** Apply them on the recharge confirming, with no action from the customer. **(c)** Grant nothing when the plan bought carries no reward. | Require the customer to claim, redeem or contact support; apply a reward for a plan the offer does not cover. |
@@ -165,6 +167,7 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | C-06 | Bonus-application recovery window — the outer deadline by which the system must apply the bonus or escalate | 10 min | 5–30 min ⚠️ *AI GENERATED — review* | PM + Eng |
 | C-07 | Include customers whose router has been collected | No | Yes / No | Growth, per offer |
 | C-08 | Announcement send window after the set is built | 2 h | 15 min – 12 h ⚠️ *AI GENERATED — review* | PM + Comms |
+| C-09 | How long each day's set membership is kept and queryable | 24 months | 12–60 months ⚠️ *AI GENERATED — review* | PM + Data |
 
 ---
 
@@ -178,6 +181,7 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | MQ-4 | Did any partner visit, or stay assigned to, a customer who had already recharged? | G4 invariant |
 | MQ-5 | Was any win-back reward ever expressed or applied as a price rather than days? | G1 |
 | MQ-6 | Did any customer receive more than one chat or WhatsApp announcement for a single entry? | G5 invariant |
+| MQ-7 | For any past day, exactly which customers were in which offer's set? | M1 · R2f · every other MQ |
 
 ---
 
@@ -191,6 +195,7 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | AC-SET-2 | **Given** the daily build has run, **When** a set is inspected, **Then** it holds every customer whose latest plan expired between C-01 [30] and C-02 [60] days ago with no recharge since, and none whose router has been collected. | R2a · R2b · R2c | Settled |
 | AC-SET-3 | **Given** a live offer covering R30–R45, **When** a growth member tries to publish a second offer covering R40–R60, **Then** publish is blocked for overlapping cohorts; **and When** they change it to R46–R60 instead, **Then** it publishes and no customer appears in both sets. | R1b · R2d · G2 | Settled |
 | AC-SET-4 | **Given** an offer whose C-07 is set to Yes, **When** the set is built, **Then** customers whose router has been collected are included. | C-07 · R2c | Settled |
+| AC-SET-5 | **Given** the build has run every day for a fortnight and customers have joined and left throughout, **When** the membership of each offer's set is asked for as it stood ten days ago, **Then** exactly the customers in it that day are returned, per offer, unchanged by every rebuild since. | R2f · C-09 · MQ-7 | Settled |
 
 ### ENTRY — Announcement (R3, G5)
 
@@ -289,7 +294,7 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | Offer set | **Canonical definition:** the list of customers an offer is served to, rebuilt every C-03 from that offer's cohort rule. A customer belongs to at most one set (R2d). Being in the set is the whole of eligibility. | Growth |
 | Cohort rule | An offer's membership test: an R-day window (C-01, C-02) plus the router-collected switch (C-07). | Growth |
 | Entry | The moment a build adds a customer to a set. Announcements are counted per entry (R3d, G5). | Growth |
-| Router not collected | No completed router-pickup for this customer. A pickup task may be open — that does not disqualify them; it is closed on recharge (R7). ⚠️ *AI GENERATED — review* | Router Recovery / Ops |
+| Router not collected | No **completed** router-pickup for this customer. An open or assigned pickup task does not disqualify them — only a pickup that actually happened does. That task is closed on recharge instead (R7). A customer leaves a set for exactly two reasons: the router was collected, or they recharged (R6). | Router Recovery / Ops |
 | Reward map | The offer's plan_id → bonus-days table, set in the offer panel. Launch values 2+2, 7+7, 14+14. Offer data, not spec. | Growth |
 
 ---
@@ -309,6 +314,7 @@ The existing offer engine supplies most of this. These are the gaps, verified ag
 | Apply the bonus or escalate within C-06. | T4 · AC-FAIL-1 | The recovery job exists but is switched off. Must be enabled. |
 | Close an open router-pickup task as *customer recharged* on recharge. | R7 · G4 | *Customer recharged* is already a recorded pickup outcome; the automatic close on recharge needs confirming with Ops. ⚠️ *AI GENERATED — review* |
 | Record every offer served, announced, applied and suppressed, so measurement can read it. | MQ-1..6 | Partly present — the engine logs one line per offer decision with a reason. Announcements and set membership are new. |
+| **Keep each day's set membership, queryable per offer per date for C-09.** Rebuilding a set must add a dated record, never overwrite the last one. | R2f · M1 · MQ-7 · AC-SET-5 | Not supported — there is no set, so no history of one. Without this the feature cannot be measured after the fact. |
 
 ---
 
@@ -329,7 +335,5 @@ The existing offer engine supplies most of this. These are the gaps, verified ag
 | Header | Reviewer and all three consulted names | Not supplied. |
 | §2 R7 · §3b T2 · §7 AC-PICKUP-1/2 · §8 · §9 | The whole pickup-task obligation — that recharging closes an open pickup task automatically | Inferred: 614 customers in the current cohort have an open pickup task, and *customer recharged* is already a recorded outcome of that flow. The PM did not raise it. **Confirm the automatic close with Ops** — if it already happens, R7 becomes a regression AC instead of a rule. |
 | §2 R3d · G5 · C-08 · AC-ENTRY-2 · MQ-6 | That announcements fire **once per entry**, not on every daily rebuild | PM chose this from three options when asked. The C-08 send window and its range are mine. |
-| §2 R1b · R2d · AC-SET-3 | That overlapping cohorts are blocked **at publish**, rather than resolved at build time by a precedence rule | Inference. The PM asked for "distinct non-overlapping cohorts"; blocking at setup is the reading that makes the guarantee structural. The alternative — let them overlap and pick a winner per customer — needs a precedence rule instead. **Needs a decision.** |
 | §4 | Chat and WhatsApp message content — that each names the best bonus available and routes to the recharge screen | Not specified. Copy is Comms' to write; only the obligation is fixed here. |
 | §5 | Every C-id range, and every default except C-01, C-02 and C-07 | The C-01 (30), C-02 (60) and C-07 (No) **defaults** are the PM's; their ranges are not. The rest are carried from the Welcome Offer or set to a plausible first value. |
-| §8 | "Router not collected" — that an *open* pickup task does not disqualify a customer | Inference. The alternative reading is that anyone with a pickup task in flight is out of scope, which would cut the cohort by roughly 600. **Needs a decision.** |
