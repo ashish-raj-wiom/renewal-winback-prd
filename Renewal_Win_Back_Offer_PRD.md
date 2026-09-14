@@ -4,8 +4,8 @@
 
 | | | | |
 |---|---|---|---|
-| **Owner** — Ashish Raj | **Reviewer** — [Eng lead] ⚠️ *AI GENERATED — review* | **Status** — Draft | **Sign-off** — Pending |
-| **Version** — v1.5 · 14 Sep 2026 | **Consulted — Offer Engine** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Router Recovery / Ops** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Comms / Growth** — [name] ⚠️ *AI GENERATED — review* |
+| **Owner** — Ashish Raj | **Reviewer** — Akash | **Status** — Signed off | **Sign-off** — Signed off · 14 Sep 2026 |
+| **Version** — v1.0 · 14 Sep 2026 | **Consulted — Offer Engine** — Akash | | |
 
 ---
 
@@ -13,7 +13,7 @@
 
 **Objective.** A customer who stopped recharging a month ago, and still has our router in their home, hears once that there is a reason to come back — and finds it waiting on the recharge screen when they open the app.
 
-**Boundary.** This spec governs customers between C-01 and C-02 R-days whose router has not been collected (C-07). It covers **more than one live offer at a time**, each over its own cohort, and those cohorts must not overlap (R4d). It leaves unchanged: the Welcome Offer and every acquisition path; the router-recovery flow itself, which keeps running as it does today (R6 is the one touch-point); customers outside the window; and the normal recharge path when no offer applies (AC-REG-1). A recharge keeps every effect it has today; the offer only adds days (G5). The bonus days for each plan are **offer data, not spec** — set per offer in the engine (R1). Out of scope: proving lift with a holdout (see Overrides), any service-issue or compensation use case, and price-setting.
+**Boundary.** This spec governs customers between C-01 and C-02 R-days whose router has not been collected (C-04). It covers **more than one live offer at a time**, each over its own cohort, and those cohorts must not overlap (R4d). It leaves unchanged: the Welcome Offer and every acquisition path; the router-recovery flow itself, which keeps running as it does today (R6 is the one touch-point); customers outside the window; and the normal recharge path when no offer applies (AC-REG-1). A recharge keeps every effect it has today; the offer only adds days (G5). The bonus days for each plan are **offer data, not spec** — set per offer in the engine (R1). Out of scope: proving lift with a holdout (see Overrides), any service-issue or compensation use case, and price-setting.
 
 **Phasing.** Everything here is specified, but not all of it ships at once.
 
@@ -59,7 +59,7 @@ R3 announces **once per entry** (R3c) — the safe default for a disengaged audi
 | R1 | As a lapsed customer, I get the bonus days on the plan I buy, so the offer is real. | **(a)** Add the bonus days the offer gives for that plan. Launch values: 2+2, 7+7, 14+14. **(b)** Apply them on the recharge confirming, with no action from the customer. **(c)** Grant nothing when the plan bought carries no reward. | Require the customer to claim, redeem or contact support; apply a reward for a plan the offer does not cover. |
 | R2 | As a lapsed customer, I see the offer on the plans it applies to when I open the recharge screen, so I know what I get. | **(a)** Mark each plan the offer covers on the recharge list, showing the plan's own days struck through and the resulting total days. **(b)** Leave the plan's price unchanged. **(c)** Leave every plan the offer does not cover exactly as it is today. | Show the offer to anyone outside the set (G2); change any price (G1). |
 | R3 | As a lapsed customer, I hear once that an offer is waiting, so I have a reason to open the app. | **(a)** Send one customer-chat message when the customer enters a set. **(b)** Send one WhatsApp message for the same entry. **(c)** Send one of each per entry in V1, and nothing further while the customer stays in that set. Further messaging is a CleverTap campaign, outside this spec and not blocked by it. | Announce a customer who is not in a set; build a hard block that would stop Ops adding CleverTap messaging later. |
-| R4 | As a member of the growth team, I target lapsed customers who still have our router, so I spend only where a win-back is possible. | **(a)** Build each offer's set once every C-03. **(b)** Include a customer whose latest plan expired between C-01 and C-02 days ago with no recharge since. **(c)** Exclude a customer whose router has been collected, unless C-07 says include. **(d)** Put a customer in **at most one** set, so exactly one win-back offer can ever serve them — sets must not overlap. **(e)** Serve the offer only to customers in that set. **(f)** Keep a dated record of every build's membership, so the exact set for any past day can be reconstructed per offer. | Show the offer to anyone outside the set (G2); place one customer in two sets; discard a day's membership once the set is rebuilt. |
+| R4 | As a member of the growth team, I target lapsed customers who still have our router, so I spend only where a win-back is possible. | **(a)** Build each offer's set once every C-03. **(b)** Include a customer whose latest plan expired between C-01 and C-02 days ago with no recharge since — whether or not they have taken a win-back offer before. **(c)** Exclude a customer whose router has been collected, unless C-04 says include. **(d)** Put a customer in **at most one** set, so exactly one win-back offer can ever serve them — sets must not overlap. **(e)** Serve the offer only to customers in that set. **(f)** Keep a dated record of every build's membership, so the exact set for any past day can be reconstructed per offer. | Show the offer to anyone outside the set (G2); place one customer in two sets; discard a day's membership once the set is rebuilt. |
 | R5 | As a member of the growth team, I want a customer to leave the set the moment they no longer belong in it, so nobody is offered something twice or too late. | **(a)** Remove the customer from the set as soon as their recharge confirms. **(b)** Remove them once they pass C-02, their router is collected, or the offer itself ends. **(c)** If they recharge after leaving, let the recharge stand with no bonus and tell them the offer is no longer available. | Leave a customer in a set after they have recharged; leave a customer who saw the offer with a silent plain recharge and no explanation. |
 | R6 | As an operations lead, I want a recharge to keep doing everything it does today, so a returning customer comes off the pickup list exactly as they already do. | **(a)** Leave the existing recharge path intact — a recharge already tells the ticket service, which closes the customer's open router-pickup ticket and pulls the task back from the partner. **(b)** Add the bonus days without altering any other effect of a recharge. | Change, delay or bypass any existing consequence of a recharge (G5); leave a pickup task assigned to a partner for a customer who has recharged (G4). |
 | R7 | **Optional in V1.** As a member of the growth team, I run several win-back offers at once from the existing offer panel, so I can treat different groups differently without a new tool. The rules below hold wherever an offer is defined — panel, API or direct configuration. | **(a)** Let the definer create more than one live win-back offer, each with its own window, bonus days per plan (R1) and cohort rule. **(b)** Reject a new offer whose cohort rule overlaps a live one (R4d). | Require a new admin surface; accept a reward expressed as a price (G1). |
@@ -80,7 +80,7 @@ flowchart TD
       WAS -- "No" --> OUT["Not in any set — no offer"]
       WAS -- "Yes" --> T3["T3 — drop from the set; the offer stops being served (R5b)"]
       E -- "Yes" --> RT{"Router collected?"}
-      RT -- "Yes, and C-07 says exclude" --> WAS
+      RT -- "Yes, and C-04 says exclude" --> WAS
       RT -- "No" --> OV{"Already in another offer's set?"}
       OV -- "Yes" --> KEEPSET["Stays where they are (R4d)"]
       OV -- "No" --> T1["T1 — add to the set; announce once (R3)"]
@@ -107,7 +107,7 @@ Lifecycle of a customer's **membership of one offer set**.
 
 | ID | From | Action / Trigger | Rule / Check | To | Side-effects |
 |---|---|---|---|---|---|
-| T1 | — | Daily build (C-03) finds the customer eligible | R-day within C-01..C-02, router not collected (unless C-07), not already in another set | In set | One customer-chat message and one WhatsApp go out once (R3c). The offer appears on the covered plans of the recharge screen (R2). |
+| T1 | — | Daily build (C-03) finds the customer eligible | R-day within C-01..C-02, router not collected (unless C-04), not already in another set | In set | One customer-chat message and one WhatsApp go out once (R3c). The offer appears on the covered plans of the recharge screen (R2). |
 | T2 | In set | Recharge confirmed on a covered plan | Still in the set at this instant, plan carries a reward, no bonus already applied for this recharge | Redeemed | The plan's bonus days are added once (R1, G3); the customer leaves the set (R5a); the recharge's existing effects all run untouched, including closing any open router-pickup ticket and pulling the task back from the partner (R6, G4, G5). |
 | T3 | In set | Passes C-02, router collected, or the offer reaches its end time | — | Dropped | The offer stops being served at the next build. No message is sent — the customer never acted on it. A customer dropped because the offer ended may enter a different live offer’s set at that build (R4d still holds — only one at a time). |
 | T4 | Redeemed | Recorded as redeemed, but the bonus days never reach the customer’s plan | — | Redeemed *(recovered)* or escalated | Customer-visible outcome only: the bonus is applied with the recharge, or the case is raised to Support/Ops and the customer told. The paid plan is untouched — it was a real recharge. No separate recovery window is specified; how a failure is retried or surfaced is the implementer’s. |
@@ -161,7 +161,7 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 
 | Element | Source / Routes to | Logic |
 |---|---|---|
-| Field — cohort rule | growth input | the R-day window (C-01, C-02) and the router-collected switch (C-07) for this offer (R4) |
+| Field — cohort rule | growth input | the R-day window (C-01, C-02) and the router-collected switch (C-04) for this offer (R4) |
 | Field — reward per plan | growth input · rate-card plans | a whole number of bonus days for each plan; the field takes nothing else (R1a, G1) |
 | Field — start / end time | growth input | both required; end after start (R7a) |
 | Check — publish guard | — | refuses to publish an offer whose cohort overlaps a live one (R7b, R4d), or whose reward is anything but days (G1) |
@@ -172,10 +172,10 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 
 | ID | Parameter | Default | Range | Who changes it |
 |---|---|---|---|---|
-| C-01 | Cohort window start — days since plan expiry | 30 | 15–45 ⚠️ *AI GENERATED — review* | Growth, per offer |
-| C-02 | Cohort window end — days since plan expiry | 60 | 45–120 ⚠️ *AI GENERATED — review* | Growth, per offer |
-| C-03 | Offer-set rebuild cadence | Daily | Daily only in V1 ⚠️ *AI GENERATED — review* | Engineering |
-| C-07 | Include customers whose router has been collected | No | Yes / No | Growth, per offer |
+| C-01 | Cohort window start — days since plan expiry | 30 | Not constrained | Growth, per offer |
+| C-02 | Cohort window end — days since plan expiry | 60 | Not constrained | Growth, per offer |
+| C-03 | Offer-set rebuild cadence | Daily | Not constrained | Engineering |
+| C-04 | Include customers whose router has been collected | No | Yes / No | Growth, per offer |
 
 ---
 
@@ -201,9 +201,10 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
 | AC-SET-1 | **Given** a growth member setting up a win-back offer, **When** they enter 2 bonus days against the 2-day plan, 7 against the 7-day and 14 against the 14-day, with a start and end date, **Then** the offer saves with those bonus days and those dates, and the bonus field takes nothing but a whole number of days. | R1a · R7a | Settled |
-| AC-SET-2 | **Given** today's build has finished, **When** an offer's set is opened, **Then** it holds every customer whose plan expired between 30 (C-01) and 60 (C-02) days ago and who has not recharged since, and nobody whose router has already been collected, C-07 being at its default. | R4a · R4b · R4c · C-07 | Settled |
+| AC-SET-2 | **Given** today's build has finished, **When** an offer's set is opened, **Then** it holds every customer whose plan expired between 30 (C-01) and 60 (C-02) days ago and who has not recharged since, and nobody whose router has already been collected, C-04 being at its default. | R4a · R4b · R4c · C-04 | Settled |
 | AC-SET-3 | **Given** a live offer for customers 30 to 45 days past expiry, **When** a growth member tries to publish a second offer covering 40 to 60 days, **Then** publishing is refused, because the two offers would target some of the same customers. | R4d · R7b · G2 | Settled |
 | AC-SET-4 | **Given** the build has run daily for a fortnight, with customers joining and leaving throughout, **When** someone asks who was in an offer's set ten days ago, **Then** they get exactly the customers who were in it that day. | R4f · MQ-7 | Settled |
+| AC-SET-5 | **Given** a customer who took a win-back offer months ago, recharged, and has since lapsed again to 30 days past expiry with the router still in their home, **When** the build runs, **Then** they join a set again and get a fresh chat and WhatsApp — having taken the offer once does not bar them. | R4b · R3a · R3b | Settled |
 
 ### ENTRY — Telling the customer (R3)
 
@@ -301,8 +302,8 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 |---|---|---|
 | R-day | Days since a customer's latest plan expired with no recharge since. R30 = thirty days past expiry. | Customer lifecycle |
 | Offer set | **Canonical definition:** the list of customers an offer is served to, rebuilt every C-03 from that offer's cohort rule. A customer belongs to at most one set (R4d). Being in the set is the whole of eligibility. | Growth |
-| Cohort rule | An offer's membership test: an R-day window (C-01, C-02) plus the router-collected switch (C-07). | Growth |
-| Entry | The moment a build adds a customer to a set. Announcements are counted per entry (R3c). | Growth |
+| Cohort rule | An offer's membership test: an R-day window (C-01, C-02) plus the router-collected switch (C-04). | Growth |
+| Entry | The moment a build adds a customer to a set. Announcements are counted per entry (R3c). A customer who wins back, lapses again and re-qualifies makes a **new** entry — they rejoin a set and are announced to again. | Growth |
 | Router not collected | No **completed** router-pickup for this customer. An open or assigned pickup task does not disqualify them — only a pickup that actually happened does; that task is closed on recharge instead (R6). Once the router has actually gone the customer has no connection, so there is nothing left to recharge and they cannot come back through this offer at all — they are dropped from the set for hygiene, not because they might act too late (R5b, T3). | Router Recovery / Ops |
 
 ---
@@ -333,15 +334,5 @@ The existing offer engine supplies most of this. These are the gaps, verified ag
 | §1 — a success metric should support a causal read | M1 is measured against a historical baseline with **no holdout** | PM chose to ship uncontrolled and add a holdout later. Accepted with the consequence recorded in §1 "Reading M1 honestly": ~20% of this cohort returns unaided, so the majority of grants will go to customers who were coming back anyway, and that share cannot be measured under this design. | Ashish Raj (PM) |
 | §4 — every screen block has a design link | The chat and WhatsApp announcement blocks say **to be defined** instead | The design and the WhatsApp template have not been written yet. The app screen has its Figma node. | Ashish Raj (PM) |
 | §3b T4 — an unbounded moment must sit inside a C-id window | The failure envelope has no deadline: the bonus applies with the recharge, or the case is raised to Support/Ops | PM removed the bonus-application recovery window. The bonus applies in the same operation as the recharge rather than on a timer, so a window implied a retry loop nobody is building. The cost is that a customer whose bonus fails has no guaranteed time by which they are told — the obligation is only that the case reaches Support/Ops (AC-FAIL-1). | Ashish Raj (PM) |
+| §5 / L8 — every C-id carries a default, a range and an owner | The four C-ids carry defaults and owners; their ranges read **Not constrained** | PM dropped the ranges at finalise. The defaults are his; the ranges were invented and never reviewed, and bounding what growth may set added false precision without adding safety. Growth sets what they need; changing a default is an offer edit, not a spec change. | Ashish Raj (PM) |
 | §2 R1a — every number outside §5 is a C-id | The launch reward values 2+2, 7+7 and 14+14 are named in R1a | PM’s instruction: the bonus days belong to the offer engine, not the spec. The values are recorded as launch data so engineering has something concrete to build against; changing them is an offer edit, not a spec change. | Ashish Raj (PM) |
-
----
-
-## AI-generated content for review
-
-| Location | What was generated | Basis |
-|---|---|---|
-| Header | Reviewer and all three consulted names | Not supplied. |
-| §2 R3c · AC-ENTRY-2 | That announcements fire **once per entry** in V1, not on every daily rebuild | PM chose this from three options when asked, and has since confirmed it is a V1 default rather than a hard rule. |
-| §4 | Chat and WhatsApp message content — that each names the best bonus available and routes to the recharge screen | Not specified. Copy is Comms' to write; only the obligation is fixed here. |
-| §5 | Every C-id range, and every default except C-01, C-02 and C-07 | The C-01 (30), C-02 (60) and C-07 (No) **defaults** are the PM's; their ranges are not. The rest are carried from the Welcome Offer or set to a plausible first value. |
