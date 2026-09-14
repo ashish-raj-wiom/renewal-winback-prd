@@ -5,7 +5,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj | **Reviewer** — [Eng lead] ⚠️ *AI GENERATED — review* | **Status** — Draft | **Sign-off** — Pending |
-| **Version** — v1.3 · 14 Sep 2026 | **Consulted — Offer Engine** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Router Recovery / Ops** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Comms / Growth** — [name] ⚠️ *AI GENERATED — review* |
+| **Version** — v1.4 · 14 Sep 2026 | **Consulted — Offer Engine** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Router Recovery / Ops** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Comms / Growth** — [name] ⚠️ *AI GENERATED — review* |
 
 ---
 
@@ -257,7 +257,7 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
-| AC-RACE-1 | **Given** a customer in this morning's set, **When** they recharge this afternoon, having passed 60 days overnight or had their router collected that morning, **Then** they get no bonus days, the recharge still goes through, and the app tells them the offer is no longer available. | R5c · §3a precedence | Settled |
+| AC-RACE-1 | **Given** a customer who was in yesterday's set at 60 days past expiry, **When** they recharge today, now 61 days past and outside the window, **Then** they get no bonus days, the recharge still goes through, and the app tells them the offer is no longer available. | R5c · §3a precedence | Settled |
 | AC-RACE-2 | **Given** a customer already in offer A's set, **When** offer B goes live and would also match them, **Then** they stay in A's set, see only A's offer, and get no second message. | R4d · G2 | Settled |
 
 ### BV — The edges of the window (C-01, C-02)
@@ -303,7 +303,7 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | Offer set | **Canonical definition:** the list of customers an offer is served to, rebuilt every C-03 from that offer's cohort rule. A customer belongs to at most one set (R4d). Being in the set is the whole of eligibility. | Growth |
 | Cohort rule | An offer's membership test: an R-day window (C-01, C-02) plus the router-collected switch (C-07). | Growth |
 | Entry | The moment a build adds a customer to a set. Announcements are counted per entry (R3d). | Growth |
-| Router not collected | No **completed** router-pickup for this customer. An open or assigned pickup task does not disqualify them — only a pickup that actually happened does. That task is closed on recharge instead (R6). A customer leaves a set for exactly two reasons: the router was collected, or they recharged (R5). | Router Recovery / Ops |
+| Router not collected | No **completed** router-pickup for this customer. An open or assigned pickup task does not disqualify them — only a pickup that actually happened does; that task is closed on recharge instead (R6). Once the router has actually gone the customer has no connection, so there is nothing left to recharge and they cannot come back through this offer at all — they are dropped from the set for hygiene, not because they might act too late (R5b, T3). | Router Recovery / Ops |
 
 ---
 
