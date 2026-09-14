@@ -184,8 +184,29 @@
   }
 
   // ── Render ───────────────────────────────────────────────────
-  fetch(MD + '?v=' + Date.now(), { cache: 'no-store' })
+  function fail(title, body) {
+    var doc = document.getElementById('doc');
+    doc.innerHTML = '<h2 style="border:0;margin-top:0">' + title + '</h2>' +
+      '<p>' + body + '</p>' +
+      '<p><a href="https://ashish-raj-wiom.github.io/renewal-winback-prd/">' +
+      'Open the hosted page</a> &nbsp;·&nbsp; ' +
+      '<a href="https://github.com/' + REPO + '/blob/main/' + MD + '">read the markdown on GitHub</a></p>';
+  }
+
+  if (location.protocol === 'file:') {
+    fail('This page needs a web server',
+      'You have opened it straight from disk. Browsers block a page on <code>file://</code> from ' +
+      'reading a file next to it, so the PRD cannot be fetched here. It works over http — on ' +
+      'GitHub Pages, or locally with any static server pointed at this folder.');
+    return;
+  }
+
+  var ctl = ('AbortController' in window) ? new AbortController() : null;
+  var timer = setTimeout(function () { if (ctl) ctl.abort(); }, 15000);
+
+  fetch(MD + '?v=' + Date.now(), { cache: 'no-store', signal: ctl && ctl.signal })
     .then(function (r) {
+      clearTimeout(timer);
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.text();
     })
@@ -235,12 +256,16 @@
       drawMermaid();
     })
     .catch(function (err) {
-      var s = document.getElementById('status');
-      if (s) {
-        s.className = 'status err';
-        s.textContent = 'Could not load ' + MD + ' — ' + err.message +
-          '. If you are opening this file from disk, serve it over http instead.';
+      clearTimeout(timer);
+      if (!window.marked) {
+        fail('The markdown renderer did not load',
+          'This page pulls <code>marked</code> and <code>mermaid</code> from cdnjs. One of them was ' +
+          'blocked or unreachable, so the PRD cannot be drawn.');
+        return;
       }
+      fail('Could not load the PRD',
+        'Fetching <code>' + MD + '</code> failed — ' +
+        (err && err.name === 'AbortError' ? 'the request timed out' : (err && err.message)) + '.');
     });
 
   // ── Contents ─────────────────────────────────────────────────
