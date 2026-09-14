@@ -5,7 +5,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj | **Reviewer** — [Eng lead] ⚠️ *AI GENERATED — review* | **Status** — Draft | **Sign-off** — Pending |
-| **Version** — v1.0 · 14 Sep 2026 | **Consulted — Offer Engine** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Router Recovery / Ops** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Comms / Growth** — [name] ⚠️ *AI GENERATED — review* |
+| **Version** — v1.1 · 14 Sep 2026 | **Consulted — Offer Engine** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Router Recovery / Ops** — [name] ⚠️ *AI GENERATED — review* | **Consulted — Comms / Growth** — [name] ⚠️ *AI GENERATED — review* |
 
 ---
 
@@ -137,7 +137,7 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | Field — uncovered plan rows | rate card | rendered exactly as today, no badge, no strip (R2c) |
 | Field — no-longer-available notice | recharge after leaving the set | shown when the recharge stands with no bonus, with the reason (R5c) |
 
-### Offer announcement — customer chat — [design link needed] · **later phase**
+### Offer announcement — customer chat — **design to be defined**
 
 **States:** sent (on entry) · not sent (not in a set)
 **Freshness:** sent on the build that added the customer (R3a, R3c)
@@ -147,7 +147,7 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | Field — message body | offer reward map | names the best bonus available to this customer and routes to the recharge screen (R3a) |
 | Rule — send once | offer set entry | one message per entry in V1; nothing further from this system while the customer stays in the set (R3d) |
 
-### Offer announcement — WhatsApp — [template link needed] · **later phase**
+### Offer announcement — WhatsApp — **template to be defined**
 
 **States:** sent (on entry) · not sent (not in a set)
 **Freshness:** sent on the build that added the customer (R3b, R3c)
@@ -336,7 +336,7 @@ The existing offer engine supplies most of this. These are the gaps, verified ag
 | Rule overridden | What was done instead | Rationale | Approved by |
 |---|---|---|---|
 | §1 — a success metric should support a causal read | M1 is measured against a historical baseline with **no holdout** | PM chose to ship uncontrolled and add a holdout later. Accepted with the consequence recorded in §1 "Reading M1 honestly": ~20% of this cohort returns unaided, so the majority of grants will go to customers who were coming back anyway, and that share cannot be measured under this design. | Ashish Raj (PM) |
-| §4 — every screen block has a design link | The chat and WhatsApp announcements have none | Comms design and the WhatsApp template have not been written yet. The app screen has its Figma node. | Ashish Raj (PM) |
+| §4 — every screen block has a design link | The chat and WhatsApp announcement blocks say **to be defined** instead | The design and the WhatsApp template have not been written yet. The app screen has its Figma node. | Ashish Raj (PM) |
 | §3b T4 — an unbounded moment must sit inside a C-id window | The failure envelope has no deadline: the bonus applies with the recharge, or the case is raised to Support/Ops | PM removed the bonus-application recovery window. The bonus applies in the same operation as the recharge rather than on a timer, so a window implied a retry loop nobody is building. The cost is that a customer whose bonus fails has no guaranteed time by which they are told — the obligation is only that the case reaches Support/Ops (AC-FAIL-1). | Ashish Raj (PM) |
 | §2 R1a — every number outside §5 is a C-id | The launch reward values 2+2, 7+7 and 14+14 are named in R1a | PM's instruction: the reward map belongs to the offer engine, not the spec. The values are recorded as launch data so engineering has something concrete to build against; changing them is an offer edit, not a spec change. | Ashish Raj (PM) |
 
