@@ -12,6 +12,6 @@ The markdown file is the single source of truth — edit it and the page follows
 | | |
 |---|---|
 | Owner | Ashish Raj · Reviewer Akash |
-| Status | **Signed off** · v1.0 · 14 Sep 2026 |
+| Status | **In review** · v1.1 · 16 Sep 2026 (v1.0 signed off 14 Sep) |
 | Cohort | R30–R60, router not collected |
 | Baseline | 19.8% return unaided · target 30% |
