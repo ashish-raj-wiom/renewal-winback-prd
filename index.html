@@ -325,8 +325,8 @@
     ['AC-REG-5',                        'new',    'v1.5'],
     ['Field — coupon list',             'new',    'v1.5'],
     ['Action — claim a coupon',         'new',    'v1.5'],
-    ['Field — notice',                  'new',    'v1.5'],
-    ['Action — notice CTA',             'new',    'v1.5'],
+    ['Popup — coupon applies at recharge','new',  'v1.5'],
+    ['Popup button — see recharge plans','new',   'v1.5'],
     ['Let the coupon page know',        'new',    'v1.5'],
     ['Coupon',                          'new',    'v1.1'],
     ['VIP Offer',                       'new',    'v1.1'],
@@ -340,6 +340,14 @@
     // v1.2 — the growth panel is in scope
     ['R8',                              'edited', 'v1.2'],
     ['T2',                              'edited', 'v1.7'],
+    ['C-05',                            'new',    'v2.0'],
+    ['AC-CFG-2',                        'new',    'v2.0'],
+    ['AC-CFG-3',                        'new',    'v2.0'],
+    ['Popup — coupon applies at recharge','edited','v2.0'],
+    ['Popup button — see recharge plans','edited','v2.0'],
+    ['Message — offer no longer available','edited','v2.0'],
+    ['One switch that stops the whole feature','new','v2.0'],
+    ['R5',                              'edited', 'v2.0'],
     ['R7',                              'edited', 'v1.7'],
     // v1.3 — G6 narrowed
     ['G6',                              'edited', 'v1.3'],
@@ -355,7 +363,8 @@
     ['v1.5', 'The <strong>coupon page</strong> flow is now in the spec — a customer in a set who claims a coupon gets a notice and a route to the recharge screen instead of a discount, and the plan list renders at normal prices. New §4 block, R2f/R2g, four acceptance criteria.'],
     ['v1.6', 'R2g confirmed and spelled out: nothing is pre-discounted on arrival, but a coupon still applies at checkout on a plan the offer does not cover. One open question closed.'],
     ['v1.7', 'Review pass: three places still promised a recharge changes nothing — R7b, T2 in the canon table, and the plan-price row — while R2a plainly changes one thing. All three now name the coupon exception.'],
-    ['v1.8', 'The §3a flow chart was still drawing the old world: two triggers, no coupons. It now has three triggers, the coupon fork on both recharge branches, and the coupon page routing into the recharge flow.']
+    ['v1.8', 'The §3a flow chart was still drawing the old world: two triggers, no coupons. It now has three triggers, the coupon fork on both recharge branches, and the coupon page routing into the recharge flow.'],
+    ['v2.0', 'An on/off switch for the whole feature (C-05) — and, critically, switching off lifts the coupon block too, so nobody is left with neither days nor discount. Plus: “notice” was my word for it; the coupon page shows a <strong>popup</strong>.']
   ];
 
   function tagChanges(doc) {
