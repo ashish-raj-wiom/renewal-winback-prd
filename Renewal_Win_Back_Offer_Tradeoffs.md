@@ -1,6 +1,6 @@
 # Renewal Win-Back Offer — Tradeoffs Register
 
-Companion to `Renewal_Win_Back_Offer_PRD.md` — v1.0 signed off 14 Sep 2026, v1.1 (coupons) in review 16 Sep 2026.
+Companion to `Renewal_Win_Back_Offer_PRD.md` v2.0, signed off 16 Sep 2026.
 Not part of the PRD. This is the record of what was decided and why, so that a question
 six months from now — *"why 30 days?"*, *"why no holdout?"* — has an answer without archaeology.
 
@@ -28,6 +28,10 @@ Owner: Ashish Raj · Reviewer: Akash
 | 18 | Coupons on plans the offer does not cover | **Unchanged** — the best coupon is auto-applied as today | Blocking coupons for the whole cohort | Only ~19% of win-back recharges are on offer-covered plans (2/7/14 days). The other 81%, dominated by the 28-day plan at 57%, keep working exactly as they do now. | 16 Sep 2026 |
 | 19 | VIP offering for customers in a win-back set | **Superseded** — this offer replaces it | Running both and letting them stack | One benefit per recharge (G6). The win-back offer is the larger of the two by a wide margin. | 16 Sep 2026 |
 | 20 | What “the plan page stays the same” means for a customer arriving from the coupon page | **Nothing is pre-discounted on arrival**; the coupon still applies at checkout on a plan the offer does not cover | Making a coupon unusable entirely once a customer is in a set | Keeps decision 18 intact — 81% of win-back recharges are on plans the offer does not cover, and those keep working as they do today. Only the pre-applied discount on the plan list goes. | 16 Sep 2026 |
+| 21 | A way to stop the whole feature in an incident | **C-05, one switch across every live offer** | Ending each offer by hand; no switch at all | Ending offers one at a time is the wrong tool when something is wrong. The decision that matters is what “off” means: it also lifts the coupon block, so nobody is left with neither days nor discount (R5g). It stops the offer; it does not claw back days already granted. | 16 Sep 2026 |
+| 22 | Does a customer learn why their coupon does not apply on a covered plan? | **Yes — a popup tells them** | Saying nothing; the coupon simply absent | 59% of win-back recharges have a coupon auto-applied today. If that discount shows in the row price, switching it off makes the plan look more expensive at the moment we are trying to win them back. Silence would read as a price rise with a badge on it. Copy is Comms’ to write. | 16 Sep 2026 |
+| 23 | A coupon blocked by the offer — spent or kept? | **Kept, unspent** | Leaving it to whatever the coupon system does today | A silently burned coupon is a real harm and nobody owned the question. Tested by AC-COUPON-3 and AC-COUPON-7. Still worth confirming with whoever owns coupons. | 16 Sep 2026 |
+| 24 | Per-screen Figma frame links | **Finalise without them** | Holding sign-off until every frame is pinned | The file, the section node and the coupon page’s frame name are enough to find the designs. Recorded as an Override so it is a known gap, not an open question. | 16 Sep 2026 |
 
 ---
 
