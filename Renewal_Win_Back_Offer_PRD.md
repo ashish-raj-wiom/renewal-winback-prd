@@ -5,7 +5,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj | **Reviewer** — Akash | **Status** — In review | **Sign-off** — v1.0 signed off · 14 Sep 2026; v1.1 pending |
-| **Version** — v1.3 · 16 Sep 2026 | **Consulted — Offer Engine** — Akash | | |
+| **Version** — v1.4 · 16 Sep 2026 | **Consulted — Offer Engine** — Akash | | |
 
 ---
 
@@ -114,9 +114,11 @@ Lifecycle of a customer's **membership of one offer set**.
 
 ## 4. Screen Requirements
 
-**Master design file:** [Figma · CA July Sprint 2026 · node `772-52553`](https://www.figma.com/design/3uNA2Hev2B2BdEBdb7b9Ro/CA-July-Sprint-2026?node-id=772-52553)
+**Master design file:** [Figma · CA Final Dev → Jan 2026 Onwards · node `16374-216849`](https://www.figma.com/design/8OMg9BTNhVDJxQ5ii10OWj/CA-Final-Dev--%3E-Jan-2026-Onwards-Re.wa.Gh.ka.Net?node-id=16374-216849)
 
-### Recharge options — customer app — [Figma node `772-52553`](https://www.figma.com/design/3uNA2Hev2B2BdEBdb7b9Ro/CA-July-Sprint-2026?node-id=772-52553)
+That node is the section holding the recharge flow, not a single frame — the frame-level link for each screen below is still to be pinned. ⚠️ *AI GENERATED — review*
+
+### Recharge options — customer app — [Figma · CA Final Dev → Jan 2026 Onwards](https://www.figma.com/design/8OMg9BTNhVDJxQ5ii10OWj/CA-Final-Dev--%3E-Jan-2026-Onwards-Re.wa.Gh.ka.Net?node-id=16374-216849)
 
 The existing "रिचार्ज के विकल्प" list. The offer decorates the plan rows it covers; it is not a separate card.
 
@@ -230,7 +232,7 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | AC-APP-1 | **Given** a customer in a set offered 14 bonus days on the 14-day plan, **When** they pay for it, **Then** their plan shows 28 days the moment the payment confirms, counted in days and never in rupees, and they did nothing to claim it. | R1a · R1b · T2 · G1 | Settled |
 | AC-APP-2 | **Given** an offer that covers only the 2-, 7- and 14-day plans, **When** the customer buys the 30-day plan instead, **Then** they get no bonus days and the recharge works as a normal 30-day recharge. | R1c | Settled |
 
-### COUPON — One benefit, not two (R2, G6)
+### COUPON — Days or discount, never both (R2, G6)
 
 | AC | Given / When / Then | Verifies | Status |
 |---|---|---|---|
@@ -361,4 +363,5 @@ The existing offer engine supplies most of this. These are the gaps, verified ag
 | Location | What was generated | Basis |
 |---|---|---|
 | §2 R2c · §4 · AC-COUPON-1 | That a customer holding a coupon is **told** why it does not apply on a covered plan | The PM gave the rule, not the wording. Flagged because 59% of win-back recharges have a coupon auto-applied today: if that discount is currently baked into the price shown on the row, switching it off makes the plan look **more expensive** at the moment we are trying to win the customer back. Silence would read as a price rise with a badge on it. |
+| §4 | That the master design node is the section holding the flow, and that a frame-level link per screen is still to be pinned | The PM supplied the file and the section node; the individual screen frames were not named. **Pin them, or tell me the frame names and I will.** |
 | §2 R2d · AC-COUPON-3 | That an unusable coupon is left unspent | Inference. Nobody said it should be consumed, but nobody said it should not, and a silently burned coupon is a real harm. **Confirm with whoever owns coupons.** |
