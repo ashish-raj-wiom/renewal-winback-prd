@@ -5,7 +5,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj | **Reviewer** — Akash | **Status** — In review | **Sign-off** — v1.0 signed off · 14 Sep 2026; v1.1 pending |
-| **Version** — v1.7 · 16 Sep 2026 | **Consulted — Offer Engine** — Akash | | |
+| **Version** — v1.8 · 16 Sep 2026 | **Consulted — Offer Engine** — Akash | | |
 
 ---
 
@@ -68,7 +68,7 @@ R4 announces **once per entry** (R4c) — the safe default for a disengaged audi
 
 ### 3a. System flow chart
 
-Two triggers: the daily build, and a recharge.
+Three triggers: the daily build, a recharge, and claiming a coupon.
 
 ```mermaid
 flowchart TD
@@ -84,18 +84,29 @@ flowchart TD
       OV -- "No" --> T1["T1 — add to the set; announce once (R4)"]
     end
 
+    subgraph CLAIM["Customer claims a coupon on the coupon page"]
+      CA["Taps claim on a coupon"] --> CIN{"In a set?"}
+      CIN -- "No" --> CTODAY["Coupon applies as it does today; plan list shows the discounted price"]
+      CIN -- "Yes" --> CNOTE["No discount, coupon not spent; notice says the benefit comes at recharge (R2f)"]
+      CNOTE --> CPLAN["Opens the recharge screen at normal prices — nothing pre-discounted (R2g)"]
+    end
+
     subgraph RECHARGE["Customer recharges"]
       B["Recharge confirmed"] --> IN{"Still in the set?"}
       IN -- "No" --> NA["No bonus; recharge stands; tell the customer the offer is no longer available (R6c)"]
       IN -- "Yes" --> P{"Does the plan bought carry a reward?"}
-      P -- "No" --> Z["Normal recharge, no bonus"]
+      P -- "No" --> Z["Normal recharge, no bonus — the customer's best coupon applies as today (R2b)"]
       P -- "Yes" --> D{"Bonus already applied for this recharge?"}
       D -- "Yes" --> KEEP["T2 (no-op) — keep the one bonus already applied"]
-      D -- "No" --> F["T2 — add the bonus days, remove from the set, close any pickup task"]
+      D -- "No" --> F["T2 — add the bonus days, apply no coupon (R2a), remove from the set, close any pickup task"]
     end
+
+    CPLAN -.-> B
 ```
 
 **Precedence — membership is checked again at recharge.** The set is rebuilt only every C-03, so a customer can still be listed and no longer qualify. Membership is re-checked when the recharge confirms, and that check wins (AC-RACE-1).
+
+**Precedence — the coupon page never decides the money.** Claiming a coupon does not price anything for a customer in a set: it routes them to the recharge screen, and the plan they pick there decides whether they get bonus days (R2a) or their coupon (R2b). Nothing is pre-discounted on the way in (R2g, AC-COUPON-6).
 
 **Precedence — one set only.** A customer who would qualify for two offers stays in the set they are already in; a new offer never takes them (R5d). This is what keeps a customer on exactly one offer (AC-RACE-2).
 
