@@ -5,7 +5,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj | **Reviewer** — Akash | **Status** — In review | **Sign-off** — v1.0 signed off · 14 Sep 2026; v1.1 pending |
-| **Version** — v1.1 · 16 Sep 2026 | **Consulted — Offer Engine** — Akash | | |
+| **Version** — v1.2 · 16 Sep 2026 | **Consulted — Offer Engine** — Akash | | |
 
 ---
 
@@ -15,12 +15,7 @@
 
 **Boundary.** This spec governs customers between C-01 and C-02 R-days whose router has not been collected (C-04). It covers **more than one live offer at a time**, each over its own cohort, and those cohorts must not overlap (R5d). It leaves unchanged: the Welcome Offer and every acquisition path; the router-recovery flow itself, which keeps running as it does today (R7 is the one touch-point); customers outside the window; and the normal recharge path when no offer applies (AC-REG-1). A recharge keeps every effect it has today, with one deliberate exception: on a plan the offer covers, no coupon applies (R2, G6). For a customer in a win-back set this offer **supersedes the VIP offering** — they get days, not a discount. On every plan the offer does not cover, coupons work exactly as they do now. The bonus days for each plan are **offer data, not spec** — set per offer in the engine (R1). Out of scope: proving lift with a holdout (see Overrides), any service-issue or compensation use case, and price-setting.
 
-**Phasing.** Everything here is specified, but not all of it ships at once.
-
-| | What | Why it is placed here |
-|---|---|---|
-| **V1** | Every rule in §2 — the bonus days (R1), one benefit not two (R2), the offer on the recharge screen (R3), the announcements (R4), targeting and the daily set (R5, R6), renewal untouched (R7) | The whole loop: tell them, show them, reward them |
-| **Optional in V1** | Defining these offers in the growth admin panel (R8) | The offers can be configured without panel support. Build it when growth needs to run them unaided |
+**Scope.** Every rule in §2 ships in V1 — the bonus days (R1), one benefit not two (R2), the offer on the recharge screen (R3), the announcements (R4), targeting and the daily set (R5, R6), renewal untouched (R7), and defining these offers in the growth admin panel (R8). Nothing is deferred.
 
 The announcement copy and the WhatsApp template are still to be defined (§4) — the obligation is fixed, the words are not.
 
@@ -65,7 +60,7 @@ R4 announces **once per entry** (R4c) — the safe default for a disengaged audi
 | R5 | As a member of the growth team, I target lapsed customers who still have our router, so I spend only where a win-back is possible. | **(a)** Build each offer's set once every C-03. **(b)** Include a customer whose latest plan expired between C-01 and C-02 days ago with no recharge since — whether or not they have taken a win-back offer before. **(c)** Exclude a customer whose router has been collected, unless C-04 says include. **(d)** Put a customer in **at most one** set, so exactly one win-back offer can ever serve them — sets must not overlap. **(e)** Serve the offer only to customers in that set. **(f)** Keep a dated record of every build's membership, so the exact set for any past day can be reconstructed per offer. | Show the offer to anyone outside the set (G2); place one customer in two sets; discard a day's membership once the set is rebuilt. |
 | R6 | As a member of the growth team, I want a customer to leave the set the moment they no longer belong in it, so nobody is offered something twice or too late. | **(a)** Remove the customer from the set as soon as their recharge confirms. **(b)** Remove them once they pass C-02, their router is collected, or the offer itself ends. **(c)** If they recharge after leaving, let the recharge stand with no bonus and tell them the offer is no longer available. | Leave a customer in a set after they have recharged; leave a customer who saw the offer with a silent plain recharge and no explanation. |
 | R7 | As an operations lead, I want a recharge to keep doing everything it does today, so a returning customer comes off the pickup list exactly as they already do. | **(a)** Leave the existing recharge path intact — a recharge already tells the ticket service, which closes the customer's open router-pickup ticket and pulls the task back from the partner. **(b)** Add the bonus days without altering any other effect of a recharge. | Change, delay or bypass any existing consequence of a recharge (G5); leave a pickup task assigned to a partner for a customer who has recharged (G4). |
-| R8 | **Optional in V1.** As a member of the growth team, I run several win-back offers at once from the existing offer panel, so I can treat different groups differently without a new tool. The rules below hold wherever an offer is defined — panel, API or direct configuration. | **(a)** Let the definer create more than one live win-back offer, each with its own window, bonus days per plan (R1) and cohort rule. **(b)** Reject a new offer whose cohort rule overlaps a live one (R5d). | Require a new admin surface; accept a reward expressed as a price (G1). |
+| R8 | As a member of the growth team, I define and run these offers myself in the existing offer panel, so I can treat different groups differently without waiting on engineering. | **(a)** Let the definer create more than one live win-back offer, each with its own window, bonus days per plan (R1) and cohort rule. **(b)** Reject a new offer whose cohort rule overlaps a live one (R5d). | Require a new admin surface; accept a reward expressed as a price (G1). |
 
 ---
 
@@ -160,7 +155,7 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | Field — template body | the offer’s bonus days | names the best bonus available to this customer (R4b) |
 | Rule — send once | offer set entry | one message per entry in V1 (R4c) |
 
-### Offer setup — growth admin — existing offer panel · **optional in V1**
+### Offer setup — growth admin — existing offer panel
 
 **States:** editing (draft) · publish-blocked (a publish check failed) · live (inside window) · ended (past end)
 **Freshness:** a newly live offer reaches customers at the next build (C-03)
