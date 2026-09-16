@@ -27,6 +27,7 @@ Owner: Ashish Raj · Reviewer: Akash
 | 17 | Coupons on plans the offer covers | **None allowed** — no auto-apply, no manual entry | Letting the customer choose whichever is worth more | Avoids paying twice for one recharge. Measured 15 Sep 2026: the bonus is worth roughly **8×** the coupon it replaces — 14+14 is ~₹305 of days against a ₹39 average coupon, 7+7 is ~₹155 against ₹19, 2+2 is ~₹45 against ₹6. The customer is not losing out. | 16 Sep 2026 |
 | 18 | Coupons on plans the offer does not cover | **Unchanged** — the best coupon is auto-applied as today | Blocking coupons for the whole cohort | Only ~19% of win-back recharges are on offer-covered plans (2/7/14 days). The other 81%, dominated by the 28-day plan at 57%, keep working exactly as they do now. | 16 Sep 2026 |
 | 19 | VIP offering for customers in a win-back set | **Superseded** — this offer replaces it | Running both and letting them stack | One benefit per recharge (G6). The win-back offer is the larger of the two by a wide margin. | 16 Sep 2026 |
+| 20 | What “the plan page stays the same” means for a customer arriving from the coupon page | **Nothing is pre-discounted on arrival**; the coupon still applies at checkout on a plan the offer does not cover | Making a coupon unusable entirely once a customer is in a set | Keeps decision 18 intact — 81% of win-back recharges are on plans the offer does not cover, and those keep working as they do today. Only the pre-applied discount on the plan list goes. | 16 Sep 2026 |
 
 ---
 
