@@ -98,41 +98,6 @@
     padding:1px 5px;margin-left:4px;white-space:nowrap;vertical-align:1px
   }
 
-  /* What changed in this update */
-  .chg{
-    display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:.6rem;font-weight:600;
-    letter-spacing:.06em;border-radius:3px;padding:1px 5px;margin-left:6px;white-space:nowrap;
-    vertical-align:1px;text-transform:uppercase
-  }
-  .chg.new{color:#1c6b4a;background:#d8f0e4;border:1px solid #7cc4a4}
-  .chg.edited{color:#8a5a12;background:#fbeed2;border:1px solid #d7ab5c}
-  :root[data-theme="dark"] .chg.new,
-  :root:not([data-theme="light"]) .chg.new{color:#8fe0b8;background:#17342a;border-color:#2f6a51}
-  :root[data-theme="dark"] .chg.edited,
-  :root:not([data-theme="light"]) .chg.edited{color:#f0c878;background:#3a2c14;border-color:#7a5c22}
-  @media (prefers-color-scheme: light){
-    :root:not([data-theme="dark"]) .chg.new{color:#1c6b4a;background:#d8f0e4;border-color:#7cc4a4}
-    :root:not([data-theme="dark"]) .chg.edited{color:#8a5a12;background:#fbeed2;border-color:#d7ab5c}
-  }
-  tr.is-chg > td:first-child{box-shadow:inset 3px 0 0 var(--bonus)}
-  body.spotlight tr:not(.is-chg){opacity:.28}
-  body.spotlight tr.is-chg{opacity:1}
-  .btn.on{color:var(--ink);border-color:var(--bonus)}
-
-  .whatsnew{
-    border:1px solid var(--rule);border-left:3px solid var(--bonus);border-radius:6px;
-    background:var(--surface);padding:16px 18px;margin:0 0 26px
-  }
-  .whatsnew h3{
-    font-family:"Archivo",sans-serif;font-size:.78rem;font-weight:600;letter-spacing:.09em;
-    text-transform:uppercase;color:var(--faint);margin:0 0 10px
-  }
-  .whatsnew ul{margin:0;padding-left:18px;max-width:46rem}
-  .whatsnew li{margin-bottom:5px;font-size:.92rem}
-  .whatsnew .v{
-    font-family:"IBM Plex Mono",monospace;font-size:.7rem;color:var(--bonus);font-weight:600
-  }
-
   .mermaid{background:var(--surface);border:1px solid var(--rule-soft);border-radius:6px;padding:18px;margin:0 0 22px;overflow-x:auto;text-align:center}
 
   .status{font-family:"IBM Plex Mono",monospace;font-size:.72rem;color:var(--faint);padding:40px 0}
@@ -151,7 +116,6 @@
       <h1>Renewal Win-Back Offer</h1>
     </div>
     <div class="tools">
-      <button class="btn" id="spotBtn" type="button">spotlight changes</button>
       <button class="btn" id="themeBtn" type="button">theme</button>
       <a class="btn" id="srcLink" href="Renewal_Win_Back_Offer_PRD.md">view .md source</a>
       <a class="btn" id="editLink" href="#">edit on github</a>
@@ -288,7 +252,6 @@
       doc.innerHTML = doc.innerHTML.split('⚠️ <span class="aiflag"')
         .join('<span class="aiflag"');
 
-      tagChanges(doc);
       buildToc(doc);
       drawMermaid();
     })
@@ -305,115 +268,10 @@
         (err && err.name === 'AbortError' ? 'the request timed out' : (err && err.message)) + '.');
     });
 
-  // ── What changed since v1.0 ──────────────────────────────────
-  // Keyed on a row's FIRST CELL: an exact id, or a prefix for rows that have no id.
-  // Update this when the markdown changes; nothing else here needs touching.
-  var TAGS = [
-    // v1.1 — coupons and the VIP offering
-    ['R2',                              'new',    'v1.1'],
-    ['G6',                              'new',    'v1.1'],
-    ['MQ-9',                            'new',    'v1.1'],
-    ['AC-COUPON-1',                     'new',    'v1.1'],
-    ['AC-COUPON-2',                     'new',    'v1.1'],
-    ['AC-COUPON-3',                     'new',    'v1.1'],
-    ['AC-COUPON-4',                     'new',    'v1.1'],
-    ['AC-REG-4',                        'new',    'v1.1'],
-    ['AC-GRD-3',                        'new',    'v1.1'],
-    ['AC-COUPON-5',                     'new',    'v1.5'],
-    ['AC-COUPON-6',                     'new',    'v1.5'],
-    ['AC-COUPON-7',                     'new',    'v1.5'],
-    ['AC-REG-5',                        'new',    'v1.5'],
-    ['Field — coupon list',             'new',    'v1.5'],
-    ['Action — claim a coupon',         'new',    'v1.5'],
-    ['Popup — coupon applies at recharge','new',  'v1.5'],
-    ['Popup button — see recharge plans','new',   'v1.5'],
-    ['Let the coupon page know',        'new',    'v1.5'],
-    ['Coupon',                          'new',    'v1.1'],
-    ['VIP Offer',                       'new',    'v1.1'],
-    ['Field — coupon on a covered row', 'new',    'v1.1'],
-    ['Field — coupon-not-applicable',   'new',    'v1.1'],
-    ['Field — coupon on an uncovered',  'new',    'v1.1'],
-    ['Decide coupon eligibility',       'new',    'v1.1'],
-    ['Hold the VIP offering back',      'new',    'v1.1'],
-    ['G5',                              'edited', 'v1.1'],
-    ['AC-REG-3',                        'edited', 'v1.1'],
-    // v1.2 — the growth panel is in scope
-    ['R8',                              'edited', 'v1.2'],
-    ['T2',                              'edited', 'v1.7'],
-    ['C-05',                            'new',    'v2.0'],
-    ['AC-CFG-2',                        'new',    'v2.0'],
-    ['AC-CFG-3',                        'new',    'v2.0'],
-    ['Popup — coupon applies at recharge','edited','v2.0'],
-    ['Popup button — see recharge plans','edited','v2.0'],
-    ['Message — offer no longer available','edited','v2.0'],
-    ['One switch that stops the whole feature','new','v2.0'],
-    ['R5',                              'edited', 'v2.0'],
-    ['R7',                              'edited', 'v1.7'],
-    // v1.3 — G6 narrowed
-    ['G6',                              'edited', 'v1.3'],
-    ['R2',                              'edited', 'v1.3']
-  ];
-
-  var PROSE = [
-    ['v1.1', 'Boundary now states that this offer supersedes the VIP offering for anyone in a win-back set, and that coupons are untouched on every plan the offer does not cover.'],
-    ['v1.1', 'G5 “renewal is untouched” had to be amended — blocking a coupon <em>is</em> a change to what a recharge does, so it now names the one exception instead of contradicting R2.'],
-    ['v1.2', 'The phasing table became a one-line Scope statement: the growth admin panel (R8) is in scope, and nothing is deferred.'],
-    ['v1.3', 'G6 dropped “never neither” — that would have been broken by any ordinary recharge with no offer and no coupon.'],
-    ['v1.4', '§4 now points at the <strong>CA Final Dev → Jan 2026 Onwards</strong> file; it was still citing the old CA July Sprint node. The per-screen frame links are still to be pinned.'],
-    ['v1.5', 'The <strong>coupon page</strong> flow is now in the spec — a customer in a set who claims a coupon gets a notice and a route to the recharge screen instead of a discount, and the plan list renders at normal prices. New §4 block, R2f/R2g, four acceptance criteria.'],
-    ['v1.6', 'R2g confirmed and spelled out: nothing is pre-discounted on arrival, but a coupon still applies at checkout on a plan the offer does not cover. One open question closed.'],
-    ['v1.7', 'Review pass: three places still promised a recharge changes nothing — R7b, T2 in the canon table, and the plan-price row — while R2a plainly changes one thing. All three now name the coupon exception.'],
-    ['v1.8', 'The §3a flow chart was still drawing the old world: two triggers, no coupons. It now has three triggers, the coupon fork on both recharge branches, and the coupon page routing into the recharge flow.'],
-    ['v2.0', 'An on/off switch for the whole feature (C-05) — and, critically, switching off lifts the coupon block too, so nobody is left with neither days nor discount. Plus: “notice” was my word for it; the coupon page shows a <strong>popup</strong>.']
-  ];
-
-  function tagChanges(doc) {
-    var byKey = {};
-    TAGS.forEach(function (t) { (byKey[t[0]] = byKey[t[0]] || []).push({ kind: t[1], ver: t[2] }); });
-    var keys = Object.keys(byKey).sort(function (a, b) { return b.length - a.length; });
-    var hits = 0;
-
-    doc.querySelectorAll('tbody tr').forEach(function (tr) {
-      var cell = tr.querySelector('td');
-      if (!cell) return;
-      var head = (cell.textContent || '').trim();
-      var key = keys.find(function (k) { return head === k || head.indexOf(k) === 0; });
-      if (!key) return;
-      tr.classList.add('is-chg');
-      hits++;
-      byKey[key].forEach(function (t) {
-        var pill = document.createElement('span');
-        pill.className = 'chg ' + t.kind;
-        pill.textContent = (t.kind === 'new' ? 'new ' : 'edited ') + t.ver;
-        cell.appendChild(pill);
-      });
-    });
-
-    // Summary, placed under the document title.
-    var box = document.createElement('div');
-    box.className = 'whatsnew';
-    box.innerHTML =
-      '<h3>What changed since v1.0 — ' + hits + ' rows tagged</h3><ul>' +
-      PROSE.map(function (p) { return '<li><span class="v">' + p[0] + '</span> — ' + p[1] + '</li>'; }).join('') +
-      '</ul>';
-    var h1 = doc.querySelector('h1');
-    if (h1 && h1.nextSibling) h1.parentNode.insertBefore(box, h1.nextSibling);
-    else doc.insertBefore(box, doc.firstChild);
-
-    var btn = document.getElementById('spotBtn');
-    btn.addEventListener('click', function () {
-      var on = document.body.classList.toggle('spotlight');
-      btn.classList.toggle('on', on);
-      btn.textContent = on ? 'show everything' : 'spotlight changes';
-    });
-  }
-
   // ── Contents ─────────────────────────────────────────────────
   function buildToc(doc) {
     var toc = document.getElementById('toc');
-    // The "what changed" box carries its own h3; it is furniture, not a section.
-    var heads = [].slice.call(doc.querySelectorAll('h2, h3'))
-      .filter(function (h) { return !h.closest('.whatsnew'); });
+    var heads = doc.querySelectorAll('h2, h3');
     if (!heads.length) return;
     heads.forEach(function (h) {
       var a = document.createElement('a');
