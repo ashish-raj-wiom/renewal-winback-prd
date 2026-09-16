@@ -5,7 +5,7 @@
 | | | | |
 |---|---|---|---|
 | **Owner** — Ashish Raj | **Reviewer** — Akash | **Status** — In review | **Sign-off** — v1.0 signed off · 14 Sep 2026; v1.1 pending |
-| **Version** — v1.4 · 16 Sep 2026 | **Consulted — Offer Engine** — Akash | | |
+| **Version** — v1.5 · 16 Sep 2026 | **Consulted — Offer Engine** — Akash | | |
 
 ---
 
@@ -54,7 +54,7 @@ R4 announces **once per entry** (R4c) — the safe default for a disengaged audi
 | ID | Story | MUST | MUST NOT |
 |---|---|---|---|
 | R1 | As a lapsed customer, I get the bonus days on the plan I buy, so the offer is real. | **(a)** Add the bonus days the offer gives for that plan. Launch values: 2+2, 7+7, 14+14. **(b)** Apply them on the recharge confirming, with no action from the customer. **(c)** Grant nothing when the plan bought carries no reward. | Require the customer to claim, redeem or contact support; apply a reward for a plan the offer does not cover. |
-| R2 | As a lapsed customer, I get one clear benefit, not a confusing mix — bonus days on the plans the offer covers, my usual coupon on the plans it does not. | **(a)** On a plan the offer covers, apply no coupon, whether auto-applied or entered by hand, and charge the plan’s normal price. **(b)** On a plan the offer does not cover, leave coupons exactly as they work today, including auto-applying the best one the customer holds. **(c)** Tell a customer who holds a coupon why it does not apply on a covered plan. ⚠️ *AI GENERATED — review* **(d)** Leave a coupon that could not be used unspent, so it is still there next time. ⚠️ *AI GENERATED — review* **(e)** While a customer is in a win-back set, do not also target them with the VIP offering. | Give bonus days and a discount on the same recharge (G6); consume a coupon that was never applied. |
+| R2 | As a lapsed customer, I get one clear benefit, not a confusing mix — bonus days on the plans the offer covers, my usual coupon on the plans it does not. | **(a)** On a plan the offer covers, apply no coupon, whether auto-applied or entered by hand, and charge the plan’s normal price. **(b)** On a plan the offer does not cover, leave coupons exactly as they work today, including auto-applying the best one the customer holds. **(c)** Tell a customer who holds a coupon why it does not apply on a covered plan. ⚠️ *AI GENERATED — review* **(d)** Leave a coupon that could not be used unspent, so it is still there next time. ⚠️ *AI GENERATED — review* **(e)** While a customer is in a win-back set, do not also target them with the VIP offering. **(f)** When a customer in a set claims a coupon from the coupon page, do not apply it — show them why and send them to the recharge screen. **(g)** Show the recharge screen at the plans’ normal prices, whether they arrived from the coupon page or anywhere else; a coupon is never pre-applied to the list for a customer in a set. ⚠️ *AI GENERATED — review* | Give bonus days and a discount on the same recharge (G6); consume a coupon that was never applied; pre-discount the plan list for a customer in a set. |
 | R3 | As a lapsed customer, I see the offer on the plans it applies to when I open the recharge screen, so I know what I get. | **(a)** Mark each plan the offer covers on the recharge list, showing the plan's own days struck through and the resulting total days. **(b)** Leave the plan's price unchanged. **(c)** Leave every plan the offer does not cover exactly as it is today. | Show the offer to anyone outside the set (G2); change any price (G1). |
 | R4 | As a lapsed customer, I hear once that an offer is waiting, so I have a reason to open the app. | **(a)** Send one customer-chat message when the customer enters a set. **(b)** Send one WhatsApp message for the same entry. **(c)** Send one of each per entry in V1, and nothing further while the customer stays in that set. Further messaging is a CleverTap campaign, outside this spec and not blocked by it. | Announce a customer who is not in a set; build a hard block that would stop Ops adding CleverTap messaging later. |
 | R5 | As a member of the growth team, I target lapsed customers who still have our router, so I spend only where a win-back is possible. | **(a)** Build each offer's set once every C-03. **(b)** Include a customer whose latest plan expired between C-01 and C-02 days ago with no recharge since — whether or not they have taken a win-back offer before. **(c)** Exclude a customer whose router has been collected, unless C-04 says include. **(d)** Put a customer in **at most one** set, so exactly one win-back offer can ever serve them — sets must not overlap. **(e)** Serve the offer only to customers in that set. **(f)** Keep a dated record of every build's membership, so the exact set for any past day can be reconstructed per offer. | Show the offer to anyone outside the set (G2); place one customer in two sets; discard a day's membership once the set is rebuilt. |
@@ -136,6 +136,20 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | Field — coupon-not-applicable note | the customer’s coupons | shown to a customer holding a coupon on a covered row, saying why it does not apply here ⚠️ *AI GENERATED — review* (R2c) |
 | Field — coupon on an uncovered row | the customer’s coupons | works exactly as today; the best coupon the customer holds is applied for them (R2b) |
 | Field — no-longer-available notice | recharge after leaving the set | shown when the recharge stands with no bonus, with the reason (R6c) |
+
+### Coupon page — customer app — [Figma · `Frame 427325681`](https://www.figma.com/design/8OMg9BTNhVDJxQ5ii10OWj/CA-Final-Dev--%3E-Jan-2026-Onwards-Re.wa.Gh.ka.Net?node-id=16374-216849)
+
+The existing "कूपन विवरण" list of the coupons a customer holds. For a customer in a win-back set, claiming one explains itself and routes to the recharge screen instead of discounting anything.
+
+**States:** in a set (claiming opens the notice) · not in a set (claiming works as it does today)
+**Freshness:** reflects the set as of the last build (C-03)
+
+| Element | Source / Routes to | Logic |
+|---|---|---|
+| Field — coupon list | the customer’s coupons | unchanged: each coupon, its cap, its code and its expiry, with the running total (R2f) |
+| Action — claim a coupon | in a set → the notice below; otherwise today’s behaviour | for a customer in a set the coupon is not applied and not spent (R2d, R2f) |
+| Field — notice | offer set membership | tells the customer the benefit comes at recharge, e.g. "रिचार्ज करते समय कूपन का लाभ अपने आप मिल जाएगा" (R2f) |
+| Action — notice CTA | the recharge options screen | "रिचार्ज प्लान देखें" — routes to the plan list, which renders at normal prices (R2g) |
 
 ### Offer announcement — customer chat — **design to be defined**
 
@@ -240,6 +254,9 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | AC-COUPON-2 | **Given** that same customer, **When** they pick the 28-day plan instead, which the offer does not cover, **Then** their best coupon is applied for them exactly as it is today, and no bonus days are added. | R2b | Settled |
 | AC-COUPON-3 | **Given** that customer took the 14-day plan and the coupon went unused, **When** they look for it afterwards, **Then** the coupon is still theirs, unspent. | R2d | Settled |
 | AC-COUPON-4 | **Given** a customer who joins a win-back set, **When** the VIP offering next runs, **Then** it does not target them while they remain in the set. | R2e | Settled |
+| AC-COUPON-5 | **Given** a customer in a set who opens the coupon page holding three coupons, **When** they claim one, **Then** no discount is applied, a notice tells them the benefit comes at recharge, and its button takes them to the recharge options screen. | R2f | Settled |
+| AC-COUPON-6 | **Given** that customer arriving at the recharge screen from the coupon page, **When** the plan list renders, **Then** every plan shows its normal price with no coupon pre-applied — the covered plans showing bonus days as usual. | R2g · R3a | Settled |
+| AC-COUPON-7 | **Given** a customer in a set who claimed a coupon and was sent to the recharge screen, **When** they look at their coupons afterwards, **Then** all three are still there, unspent. | R2d · R2f | Settled |
 
 ### EXIT — Leaving the set (R6)
 
@@ -299,6 +316,7 @@ The existing "रिचार्ज के विकल्प" list. The offer d
 | AC-REG-1 | **Given** a customer in no win-back set, **When** they open the recharge screen and pay, **Then** the screen looks as it does today, the recharge works as it does today, and no message is sent. | Boundary · R3c | Settled |
 | AC-REG-2 | **Given** someone still signing up as a new customer, **When** a win-back offer is live, **Then** their Welcome Offer works as before and they never see a win-back offer. | Boundary · G2 | Settled |
 | AC-REG-4 | **Given** a customer in no win-back set, **When** they recharge on any plan, **Then** their coupons and the VIP offering work exactly as they do today — nothing about this feature reaches them. | Boundary · G6 | Settled |
+| AC-REG-5 | **Given** a customer in no win-back set, **When** they claim a coupon from the coupon page, **Then** it is applied as it is today and the plan list shows the discounted prices — no notice, no change. | Boundary · R2f | Settled |
 | AC-REG-3 | **Given** a customer in a win-back set, **When** they recharge, **Then** everything a recharge normally does still happens — the plan starts, the pickup closes and comes off the partner, the mandate is handled, the usual messages go out — and the only differences are the bonus days and, on a covered plan, the absent coupon (R2a). | G5 · R7b | Settled |
 
 ### GRD — Guardrails
@@ -340,6 +358,7 @@ The existing offer engine supplies most of this. These are the gaps, verified ag
 | Apply the bonus with the recharge, or raise the failure. | T4 · AC-FAIL-1 | A recovery job exists in the engine but is switched off, and its escalation is a log line rather than a notification. Whatever is used, a failed bonus must not end as a silent log. |
 | Close an open router-pickup ticket on recharge and pull the task back from the partner. | R7 · G4 · G5 | **Already works — the requirement is not to break it.** Verified 14 Sep 2026: `CustomerFunctions` raises the recharge event *"so cash-collect / router-pickup tickets are closed"*, `TaskExecutionService.informTicketService` publishes `CUSTOMER_RECHARGED_V2` to the ticket queue, and `TicketServiceImpl.closeTicket` closes a `ROUTER_PICKUP` ticket, logs `CUSTOMER_RECOVERED`, and pulls a partner-assigned task back to Wiom. No new build — a regression risk only. |
 | Decide coupon eligibility per plan row, and suppress coupon auto-apply on the rows this offer covers. | R2a · R2b · G6 | Not supported — coupon auto-apply does not know about offers. Measured 15 Sep 2026: 57% of win-back recharges carry a coupon today, so this path is exercised constantly, not rarely. |
+| Let the coupon page know whether the customer is in a win-back set, so claiming a coupon can route rather than discount. | R2f · R2g | Not supported — the coupon page has no notion of offers. |
 | Hold the VIP offering back from customers in a win-back set. | R2e | Not supported, and it is not this engine’s to do — it needs whoever owns VIP targeting to read the set. |
 | Record every offer served, announced, applied and suppressed, so measurement can read it. | MQ-1..MQ-6 · MQ-8 | Partly present — the engine logs one line per offer decision with a reason. Announcements and set membership are new. |
 | **Keep each day's set membership, queryable per offer per date.** Rebuilding a set must add a dated record, never overwrite the last one. | R5f · M1 · MQ-7 · AC-SET-4 | Not supported — there is no set, so no history of one. Without this the feature cannot be measured after the fact. |
@@ -363,5 +382,6 @@ The existing offer engine supplies most of this. These are the gaps, verified ag
 | Location | What was generated | Basis |
 |---|---|---|
 | §2 R2c · §4 · AC-COUPON-1 | That a customer holding a coupon is **told** why it does not apply on a covered plan | The PM gave the rule, not the wording. Flagged because 59% of win-back recharges have a coupon auto-applied today: if that discount is currently baked into the price shown on the row, switching it off makes the plan look **more expensive** at the moment we are trying to win the customer back. Silence would read as a price rise with a badge on it. |
+| §2 R2g | That a coupon is never **pre-applied** to the plan list for a customer in a set, while R2b still lets the best coupon apply at checkout on a plan the offer does not cover | The PM said the plan page "remains the same" and no longer shows the coupon-discounted value. Read as: nothing is pre-discounted on arrival, but an uncovered plan still honours the coupon when the customer pays. **If the intent is that a coupon cannot be used at all once someone is in a set, R2b is what needs changing, not this.** |
 | §4 | That the master design node is the section holding the flow, and that a frame-level link per screen is still to be pinned | The PM supplied the file and the section node; the individual screen frames were not named. **Pin them, or tell me the frame names and I will.** |
 | §2 R2d · AC-COUPON-3 | That an unusable coupon is left unspent | Inference. Nobody said it should be consumed, but nobody said it should not, and a silently burned coupon is a real harm. **Confirm with whoever owns coupons.** |
